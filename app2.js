@@ -34,7 +34,7 @@ price: 4999
 
 //getValue("type");
 //addNewProperty("passengers",5)
-//editKilometres();
+//editKilometres(17500);
 //deleteRow("year");
 
 console.log(car);
