@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Car Object Manager</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+            border-bottom: 2px solid #4CAF50;
+            padding-bottom: 10px;
+        }
+        .section {
+            margin: 20px 0;
+            padding: 15px;
+            background: #f9f9f9;
+            border-radius: 5px;
+        }
+        button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        input {
+            padding: 8px;
+            margin: 5px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        #output {
+            background: #2b2b2b;
+            color: #00ff00;
+            padding: 15px;
+            border-radius: 5px;
+            margin-top: 20px;
+            font-family: 'Courier New', monospace;
+            white-space: pre-wrap;
+            min-height: 100px;
+        }
+        .car-display {
+            background: #e8f5e9;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 10px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Car Object Manager</h1>
+
+        <div class="car-display" id="carDisplay"></div>
+
+        <div class="section">
+            <h3>LIST - Display All Properties</h3>
+            <button onclick="listAllProperties()">List All Properties</button>
+        </div>
+
+        <div class="section">
+            <h3>GET - Retrieve Value</h3>
+            <input type="text" id="getProperty" placeholder="Property name (e.g., type)">
+            <button onclick="getValueAction()">Get Value</button>
+        </div>
+
+        <div class="section">
+            <h3>POST - Add New Property</h3>
+            <input type="text" id="addProperty" placeholder="Property name">
+            <input type="text" id="addValue" placeholder="Value">
+            <button onclick="addNewPropertyAction()">Add Property</button>
+        </div>
+
+        <div class="section">
+            <h3>PUT - Update Property</h3>
+            <input type="text" id="updateProperty" placeholder="Property name">
+            <input type="text" id="updateValue" placeholder="New value">
+            <button onclick="updatePropertyAction()">Update Property</button>
+        </div>
+
+        <div class="section">
+            <h3>DELETE - Remove Property</h3>
+            <input type="text" id="deleteProperty" placeholder="Property name">
+            <button onclick="deleteRowAction()">Delete Property</button>
+        </div>
+
+        <div id="output"></div>
+    </div>
+
+    <script>
+        // The car object
+        var car = {
+            type: "Citroen",
+            model: "C3",
+            year: "2006",
+            kilometres: 15000,
+            color: "white",
+            price: 4999
+        };
+
+        function log(message) {
+            const output = document.getElementById('output');
+            output.textContent += message + '\n';
+            updateCarDisplay();
+        }
+
+        function updateCarDisplay() {
+            const display = document.getElementById('carDisplay');
+            display.innerHTML = '<h3>Current Car Object:</h3>' +
+                JSON.stringify(car, null, 2).replace(/\n/g, '<br>').replace(/ /g, '&nbsp;');
+        }
+
+        // GET - retrieve values from the object
+        function getValue(property) {
+            var value = car[property];
+            log("The value you asked is " + value);
+            return value;
+        }
+
+        // LIST - display all properties of the object
+        function listAllProperties() {
+            log("=== Car Properties ===");
+            for(var property in car) {
+                if(car.hasOwnProperty(property)) {
+                    log(property + ": " + car[property]);
+                }
+            }
+            log("=====================");
+        }
+
+        // POST - add a row in the object
+        function addNewProperty(property, value) {
+            car[property] = value;
+            log("Added property '" + property + "' with value: " + value);
+        }
+
+        // PUT - update any property value in the object
+        function updateProperty(property, value) {
+            if(car.hasOwnProperty(property)) {
+                car[property] = value;
+                log("Updated " + property + " to " + value);
+            } else {
+                log("Property '" + property + "' does not exist. Use addNewProperty() to add it.");
+            }
+        }
+
+        // DELETE - delete a row in the object
+        function deleteRow(property) {
+            if(car.hasOwnProperty(property)) {
+                delete car[property];
+                log("Deleted property: " + property);
+            } else {
+                log("Property '" + property + "' does not exist.");
+            }
+        }
+
+        // UI Actions
+        function getValueAction() {
+            const property = document.getElementById('getProperty').value;
+            if(property) getValue(property);
+        }
+
+        function addNewPropertyAction() {
+            const property = document.getElementById('addProperty').value;
+            const value = document.getElementById('addValue').value;
+            if(property && value) {
+                addNewProperty(property, value);
+                document.getElementById('addProperty').value = '';
+                document.getElementById('addValue').value = '';
+            }
+        }
+
+        function updatePropertyAction() {
+            const property = document.getElementById('updateProperty').value;
+            const value = document.getElementById('updateValue').value;
+            if(property && value) {
+                updateProperty(property, value);
+                document.getElementById('updateProperty').value = '';
+                document.getElementById('updateValue').value = '';
+            }
+        }
+
+        function deleteRowAction() {
+            const property = document.getElementById('deleteProperty').value;
+            if(property) {
+                deleteRow(property);
+                document.getElementById('deleteProperty').value = '';
+            }
+        }
+
+        // Initialize display
+        updateCarDisplay();
+        log("Car Object Manager loaded. Use the controls above to interact with the car object.");
+    </script>
+</body>
+</html>
